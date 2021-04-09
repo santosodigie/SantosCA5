@@ -1,4 +1,4 @@
 package com.dkit.oopca5.DTO;
 
-public class student {
+public class Student_Courses {
 }

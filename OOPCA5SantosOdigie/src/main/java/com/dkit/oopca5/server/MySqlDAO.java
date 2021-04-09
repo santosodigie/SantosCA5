@@ -6,4 +6,5 @@ All of the database functionality should be here. You will need a DAO for each t
 
 public class MySqlDAO
 {
+
 }
