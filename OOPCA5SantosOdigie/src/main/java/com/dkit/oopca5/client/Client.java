@@ -17,63 +17,32 @@ import java.util.Scanner;
 /*This class prints out the menu.*/
 
 public class Client {
-    private Scanner keyboard = new Scanner(System.in);
-    private Socket dataSocket = new Socket(CAOService.HOSTNAME, CAOService.PORT_NUM);
-    private String response = "";
+    Scanner keyboard = new Scanner(System.in);
+    Socket socket = new Socket("localhost", 8080);
+
 
     public Client() throws IOException {
     }
 
     public static void main(String[] args) throws IOException {
+
         new Client().start();
 
     }
     private void start() {
+
         doMainMenuLoop();
     }
 
     public void doMainMenuLoop()
     {
 
-//        try {
-//
-//            boolean loop = true;
-//            MainMenu choice;
-//            int getChoice;
-//            while (loop) {
-//                displayMainMenu();
-//                getChoice = keyboard.nextInt();
-//                keyboard.nextLine();
-//                choice = MainMenu.values()[getChoice];
-//                switch (choice) {
-//                    case QUIT_APPLICATION:
-//                        loop = false;
-//                        break;
-//                    case REGISTER:
-//                        register();
-//                        break;
-//                    case LOGIN:
-//                        login();
-//                        break;
-//                }
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         try
         {
-            //Step 1: Establish a connection to the server
-            // Like a phone call, first need to dial the number
-            // before you can talk
-//            Socket dataSocket = new Socket(CAOService.HOSTNAME, CAOService.PORT_NUM);
 
-            //Step 2: Build input and output streams
-            OutputStream out = dataSocket.getOutputStream();
-            //Decorator pattern
-            PrintWriter output = new PrintWriter(new OutputStreamWriter(out));
-
-            InputStream in = dataSocket.getInputStream();
-            Scanner input = new Scanner(new InputStreamReader(in));
+            OutputStream os = socket.getOutputStream();
+            PrintWriter socketWriter = new PrintWriter(os, true);
+            Scanner socketReader = new Scanner(socket.getInputStream());
 
 //            Scanner keyboard = new Scanner(System.in);
 
@@ -87,51 +56,40 @@ public class Client {
                 getChoice = keyboard.nextInt();
                 keyboard.nextLine();
                 choice = MainMenu.values()[getChoice];
-//                String response = "";
+
 
                 switch(choice)
                 {
+
                     case QUIT_APPLICATION:
                         message = CAOService.END_SESSION;
-                        //send message
-                        output.println(message);
-                        output.flush();
+                        socketWriter.println(message);
 
-                        //Listen for response
-                        response = input.nextLine();
-                        if(response.equals(CAOService.SESSION_TERMINATED))
-                        {
-                            System.out.println("Session ended");
-                        }
+
+                        System.out.println("reply from Server: " + socketReader.nextLine());
+
                         break;
                     case REGISTER:
                         message = register(keyboard);
+                        socketWriter.println(message);
 
-                        //send message
-                        output.println(message);
-                        output.flush();
-                        //listen for response
-                        response = input.nextLine();
-                        System.out.println("Received response: " + response);
+                        System.out.println("reply: " + socketReader.nextLine());
                         break;
 
                     case LOGIN:
                         message = login(keyboard);
-                        //send message
-                        output.println(message);
-                        output.flush();
-                        //listen for response
-                        response = input.nextLine();  //Doesn't like .next OR .nextLine. Find out why.
-                        System.out.println("Received response: " + response);
+                        socketWriter.println(message);
+
+                        System.out.println("reply: " + socketReader.nextLine());
                         break;
                 }
-                if(response.equals(CAOService.UNRECOGNISED))
+                if(message.equals(CAOService.UNRECOGNISED))
                 {
                     System.out.println("Sorry, the request is not recognised.");
                 }
             }
             System.out.println("Thanks for using the CAO Application App.");
-            dataSocket.close();
+            socket.close();
         }
         catch (UnknownHostException e)
         {
@@ -147,12 +105,12 @@ public class Client {
 
     private void doAdminMenuLoop(MySqlStudentDao loginResult, int caoNum) throws IOException {
 
-        OutputStream out = dataSocket.getOutputStream();
+        OutputStream out = socket.getOutputStream();
 
         //Decorator pattern
         PrintWriter output = new PrintWriter(new OutputStreamWriter(out));
 
-        InputStream in = dataSocket.getInputStream();
+        InputStream in = socket.getInputStream();
         Scanner input = new Scanner(new InputStreamReader(in));
         String message = "";
         boolean loop = true;
@@ -172,25 +130,12 @@ public class Client {
                 {
                     case QUIT:
                         message = CAOService.END_SESSION;
-                        //send message
-                        output.println(message);
-                        output.flush();
 
-                        //Listen for response
-                        response = input.nextLine();
-                        if(response.equals(CAOService.SESSION_TERMINATED))
-                        {
-                            System.out.println("Session ended");
-                        }
+
                         break;
                     case LOGOUT:
                         message = CAOService.LOGOUT;
-                        //send message
-                        output.println(message);
-                        output.flush();
-                        //listen for response
-                        response = input.nextLine();
-                        System.out.println("Received response: " + response);
+
                         doMainMenuLoop();
                         break;
                     case DISPLAY_COURSE:
@@ -220,7 +165,7 @@ public class Client {
                         pickchoices.updatechoices(caoNum);
                         break;
                 }
-                if(response.equals(CAOService.UNRECOGNISED))
+                if(message.equals(CAOService.UNRECOGNISED))
                 {
                     System.out.println("Sorry, the request is not recognised.");
                 }
@@ -251,26 +196,15 @@ public class Client {
     private String login(Scanner input) throws DaoException, IOException {
         System.out.println("Login: ");
 
-        StringBuffer message = new StringBuffer(CAOService.LOGIN_COMMAND);
+
         String output = "";
-        message.append(CAOService.BREAKING_CHARACTER);
+
         System.out.println("Enter CAO Number:\t");
         int caoNumber = input.nextInt();
         System.out.println("Enter Password:\t");
         String password = input.next();
         MySqlStudentDao login = new MySqlStudentDao();
         boolean cool = false;
-
-//        if(login.login(caoNumber, password))
-//        {
-//            doAdminMenuLoop(login);
-//        }
-//        String result2 = login.login(caoNumber, password);
-//        System.out.println(result2);
-//        String result2 = login.login(caoNumber, password);
-////        System.out.println(result2);
-//        message.append(result2);
-//        message.append(login);
 
         if(login.login(caoNumber, password))
         {
@@ -288,41 +222,41 @@ public class Client {
         }
 //        message.append(login);
 
-        boolean idc;
-        String result2 = "";
-        if(result2.equals(login.login(caoNumber, password)))
-        {
-
-            doAdminMenuLoop(login, caoNumber);
-        }
+//        boolean idc;
+//        String result2 = "";
+//        if(result2.equals(login.login(caoNumber, password)))
+//        {
+//
+//            doAdminMenuLoop(login, caoNumber);
+//        }
 //        String result2 = login.login(caoNumber, password);
-        message.append(result2);
+        String message = CAOService.LOGIN_COMMAND + CAOService.BREAKING_CHARACTER + caoNumber + CAOService.BREAKING_CHARACTER + password;
 
-        return message.toString();
+        return message;
 
     }
 
     public String register(Scanner input) throws DaoException {
 
-        StringBuffer message = new StringBuffer(CAOService.REGISTER_COMMAND);
-        message.append(CAOService.BREAKING_CHARACTER);
-//        System.out.print("Enter message to echo:> ");
+
+
         System.out.println("Enter CAO Number:");
         int caoNumber = input.nextInt();
-        message.append(caoNumber);
+
 
         System.out.println("Enter Date of Birth:");
         String dateOfBirth = input.next();
-        message.append(CAOService.BREAKING_CHARACTER);
-        message.append(dateOfBirth);
+
+
         System.out.println("Enter Password:");
         String password = input.next();
-        message.append(CAOService.BREAKING_CHARACTER);
-        message.append(password);
-        //String echo = input.nextLine();
+
+
         MySqlStudentDao register = new MySqlStudentDao();
-        String result1 = register.register(caoNumber, dateOfBirth, password);
-        message.append(result1);
+        register.register(caoNumber, dateOfBirth, password);
+
+        String message = CAOService.REGISTER_COMMAND + CAOService.BREAKING_CHARACTER + caoNumber + CAOService.BREAKING_CHARACTER + dateOfBirth + CAOService.BREAKING_CHARACTER + password;
+
 
         return message.toString();
     }
