@@ -10,18 +10,6 @@ import java.util.regex.Pattern;
 
 public class RegexChecker
 {
-    public static void main(String[] args) {
-        String test = "2000-09-40";
-        if(isValidPassword("Flasher@212"))
-        {
-            System.out.println("1 step closer");
-        }
-        else
-        {
-            System.out.println("wham");
-        }
-
-    }
 
 
     public static boolean isValid(String text) {
@@ -36,42 +24,50 @@ public class RegexChecker
             return false;
         }
     }
+    public static boolean iseightdigits(String number){
+        if(number == null || !number.matches("\\d{8}"))
+        {
+            System.out.println("Please enter a 8 digit number");
+            return false;
+        }
+        else
+        {
+            return true;
+        }
 
-    // Java program to validate
-// the password using ReGex
+    }
 
-
-        // Function to validate the password.
         public static boolean  isValidPassword(String password)
         {
+            //one capital number and special character must be between 8 and 20
 
-            // Regex to check valid password.
             String regex = "^(?=.*[0-9])"
                     + "(?=.*[a-z])(?=.*[A-Z])"
                     + "(?=.*[@#$%^&+=])"
                     + "(?=\\S+$).{8,20}$";
 
-            // Compile the ReGex
             Pattern p = Pattern.compile(regex);
 
-            // If the password is empty
-            // return false
+
             if (password == null) {
                 return false;
             }
 
-            // Pattern class contains matcher() method
-            // to find matching between given password
-            // and regular expression.
             Matcher m = p.matcher(password);
 
-            // Return if the password
-            // matched the ReGex
             return m.matches();
         }
 
-        // Driver Code.
-
-
+        public static boolean iscourseid(String courseid)
+        {
+            if(courseid.matches("[a-zA-Z]{2}\\d{3}"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
 }

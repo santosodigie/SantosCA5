@@ -91,7 +91,7 @@ public class Server
             String message;
             try
             {
-                while ((message = socketReader.readLine()) != null)
+                while ((message = socketReader.readLine()) != null || message.startsWith("QUIT"))
                 {
                     System.out.println("Server: (ClientHandler): Read command from client " + clientNumber + ": " + message);
 
@@ -102,40 +102,31 @@ public class Server
 
                         socketWriter.println("REGISTERED");
                     }
-                    else if(message.startsWith("LOGIN"))
+                    if(message.startsWith("LOGIN"))
                     {
-                        System.out.println("LOGGED IN");
+                        socketWriter.println("LOGGED IN");
                     }
                     else if(message.startsWith("DISPLAY COURSE"))
                     {
-
+                        socketWriter.println("Course Displayed");
                     }
                     else if(message.startsWith("DISPLAY ALL"))
                     {
-
+                        socketWriter.println("ALL COURSES DISPLAYED");
                     }
                     else if(message.startsWith("DISPLAY CURRENT"))
                     {
-
+                        System.out.println("Displayed current");
                     }
                     else if(message.startsWith("UPDATE CURRENT"))
                     {
-
+                        System.out.println("Updated Current");
                     }
 
-                    if (message.startsWith("Time"))
-                    {
-                        LocalTime time =  LocalTime.now();
-                        socketWriter.println(time);  // sends current time to client
-                    }
-                    else if (message.startsWith("Echo"))
-                    {
-                        message = message.substring(5); // strip off the 'Echo ' part
-                        socketWriter.println(message);  // send message to client
-                    }
                     else
                     {
                         socketWriter.println("I'm sorry I don't understand :(");
+
                     }
                 }
 
