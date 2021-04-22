@@ -8,6 +8,7 @@ import com.dkit.oopca5.Exceptions.DaoException;
 import com.dkit.oopca5.Menus.CAOCourseMenu;
 import com.dkit.oopca5.Menus.MainMenu;
 import com.dkit.oopca5.DAO.MySqlStudentDao;
+import com.dkit.oopca5.client.RegexChecker;
 
 import java.io.*;
 import java.net.*;
@@ -220,38 +221,50 @@ public class Client {
                 doAdminMenuLoop(login, caoNumber);
             }
         }
-//        message.append(login);
 
-//        boolean idc;
-//        String result2 = "";
-//        if(result2.equals(login.login(caoNumber, password)))
-//        {
-//
-//            doAdminMenuLoop(login, caoNumber);
-//        }
-//        String result2 = login.login(caoNumber, password);
         String message = CAOService.LOGIN_COMMAND + CAOService.BREAKING_CHARACTER + caoNumber + CAOService.BREAKING_CHARACTER + password;
 
-        return message;
+        return message.toString();
 
     }
 
     public String register(Scanner input) throws DaoException {
 
+        boolean r;
+        r = false;
+        int caoNumber=0;
 
+        while(r == false) {
+            System.out.println("Enter CAO Number:");
+            caoNumber = input.nextInt();
+            if(RegexChecker.iseightdigits(Integer.toString(caoNumber)))
+            {
+                r = true;
+            }
 
-        System.out.println("Enter CAO Number:");
-        int caoNumber = input.nextInt();
+        }
 
+        boolean s;
+        s = false;
+        String dateOfBirth="";
+        while(s == false) {
+            System.out.println("Enter Date of Birth:");
+            dateOfBirth = input.next();
+            if(RegexChecker.isValid(dateOfBirth))
+            {
+                s = true;
+            }
 
-        System.out.println("Enter Date of Birth:");
-        String dateOfBirth = input.next();
+        }
 
+        boolean a;
+        a = false;
+        String password="";
+        while(a == false) {
+            System.out.println("Enter Password:");
+            password = input.next();
 
-        System.out.println("Enter Password:");
-        String password = input.next();
-
-
+        }
         MySqlStudentDao register = new MySqlStudentDao();
         register.register(caoNumber, dateOfBirth, password);
 
@@ -281,61 +294,4 @@ public class Client {
         }
         System.out.print("Enter a number to select option (enter 0 to quit):>");
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    private static String generateEcho(Scanner keyboard)
-//    {
-//        StringBuffer message = new StringBuffer(ComboServiceDetails.ECHO);
-//        message.append(ComboServiceDetails.COMMAND_SEPARATOR);
-//        System.out.print("Enter message to echo:> ");
-//        String echo = keyboard.nextLine();
-//        message.append(echo);
-//
-//        return message.toString();
-//    }
-//
-//    private static int getNumber(Scanner keyboard)
-//    {
-//        boolean numberEntered = false;
-//        int number = 0;
-//        while(!numberEntered)
-//        {
-//            try
-//            {
-//                number = keyboard.nextInt();
-//                numberEntered = true;
-//            }
-//            catch(InputMismatchException e)
-//            {
-//                System.out.println("Please enter an integer (0-3)");
-//                keyboard.nextLine();
-//            }
-//        }
-//        keyboard.nextLine();
-//        return number;
-//    }
-//
-//    private static void displayMenu()
-//    {
-//        System.out.println("0) To quit");
-//        System.out.println("1) To echo a message");
-//        System.out.println("2) To get server date and time");
-//        System.out.println("3) To get stats");
-//    }
 }
