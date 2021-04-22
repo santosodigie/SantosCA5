@@ -8,9 +8,21 @@ import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+
+
 public class RegexChecker
 {
-
+    public static void main(String[] args) {
+        if(isValidPassword("PASSword899#%"))
+        {
+            System.out.println("success");
+        }
+        else
+        {
+            System.out.println("fail");
+        }
+    }
 
     public static boolean isValid(String text) {
         if (text == null || !text.matches("\\d{4}-[01]\\d-[0-3]\\d"))
@@ -34,6 +46,7 @@ public class RegexChecker
         {
             return true;
         }
+
 
     }
 

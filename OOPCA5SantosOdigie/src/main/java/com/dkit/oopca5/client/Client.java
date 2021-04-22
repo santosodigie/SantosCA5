@@ -135,7 +135,7 @@ public class Client {
 
                         break;
                     case LOGOUT:
-                        message = CAOService.LOGOUT;
+               //         message = CAOService.LOGOUT;
 
                         doMainMenuLoop();
                         break;
@@ -263,6 +263,10 @@ public class Client {
         while(a == false) {
             System.out.println("Enter Password:");
             password = input.next();
+            if(RegexChecker.isValidPassword(password))
+            {
+                a = true;
+            }
 
         }
         MySqlStudentDao register = new MySqlStudentDao();

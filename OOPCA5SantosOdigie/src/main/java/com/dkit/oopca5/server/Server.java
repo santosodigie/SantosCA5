@@ -91,7 +91,7 @@ public class Server
             String message;
             try
             {
-                while ((message = socketReader.readLine()) != null || message.startsWith("QUIT"))
+                while ((message = socketReader.readLine()) != null)
                 {
                     System.out.println("Server: (ClientHandler): Read command from client " + clientNumber + ": " + message);
 
@@ -121,6 +121,10 @@ public class Server
                     else if(message.startsWith("UPDATE CURRENT"))
                     {
                         System.out.println("Updated Current");
+                    }
+                    else if(message.startsWith("QUIT"))
+                    {
+                        socketWriter.println("terminating");
                     }
 
                     else
