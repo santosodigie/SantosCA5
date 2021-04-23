@@ -106,6 +106,10 @@ public class Server
                     {
                         socketWriter.println("LOGGED IN");
                     }
+                    else if(message.startsWith("LOGOUT"))
+                    {
+                        socketWriter.println("Logging out");
+                    }
                     else if(message.startsWith("DISPLAY COURSE"))
                     {
                         socketWriter.println("Course Displayed");

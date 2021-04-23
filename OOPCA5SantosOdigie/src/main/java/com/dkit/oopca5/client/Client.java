@@ -119,6 +119,9 @@ public class Client {
         int option;
         try
         {
+            OutputStream os = socket.getOutputStream();
+            PrintWriter socketWriter = new PrintWriter(os, true);
+            Scanner socketReader = new Scanner(socket.getInputStream());
 
             while(!message.equals(CAOService.LOGOUT))
             {
@@ -135,8 +138,9 @@ public class Client {
 
                         break;
                     case LOGOUT:
-               //         message = CAOService.LOGOUT;
-
+                        message = CAOService.LOGOUT;
+                        socketWriter.println(message);
+                        System.out.println("reply from Server: " + socketReader.nextLine());
                         doMainMenuLoop();
                         break;
                     case DISPLAY_COURSE:
